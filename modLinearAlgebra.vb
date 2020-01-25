@@ -88,6 +88,9 @@ Namespace VectorizedMultiLayerPerceptron
 
         End Function
 
+        ''' <summary>
+        ''' Cut matrix from x1, y1 to x2, y2
+        ''' </summary>
         Public Function Slice(x1%, y1%, x2%, y2%) As Matrix
 
             If matrix Is Nothing Then Throw New ArgumentException("Matrix can not be null")
@@ -98,7 +101,6 @@ Namespace VectorizedMultiLayerPerceptron
 
             Dim slice0 = New Double(x2 - x1 - 1, y2 - y1 - 1) {}
             For i = x1 To x2 - 1
-
                 For j = y1 To y2 - 1
                     slice0(i - x1, j - y1) = matrix(i, j)
                 Next
@@ -176,13 +178,17 @@ Namespace VectorizedMultiLayerPerceptron
 
         Private Function ToStringWithFormat$(Optional dec$ = "0.00")
 
-            Dim sb As New StringBuilder("{")
+            Dim sb As New StringBuilder()
+            sb.AppendLine("{")
             For i = 0 To x - 1
-                sb.Append("{")
+                sb.Append(" {")
                 For j = 0 To y - 1
-                    sb.Append(matrix(i, j).ToString(dec) & ", ")
+                    Dim sVal$ = matrix(i, j).ToString(dec).Replace(",", ".")
+                    sb.Append(sVal)
+                    If j < y - 1 Then sb.Append(", ")
                 Next
-                sb.Append("}," & vbLf)
+                sb.Append("}")
+                If i < x - 1 Then sb.Append("," & vbLf)
             Next
             sb.Append("}")
             Return sb.ToString()
@@ -422,6 +428,23 @@ Namespace VectorizedMultiLayerPerceptron
             Next
 
         End Sub
+
+        ''' <summary>
+        ''' Apply a function to each element of the array
+        ''' </summary>
+        Public Shared Function Map(m As Matrix, lambdaFct As Func(Of Double, Double)) As Matrix
+
+            Dim c As New Matrix(m.x, m.y)
+
+            For i As Integer = 0 To m.x - 1
+                For j As Integer = 0 To m.y - 1
+                    c._matrix(i, j) = lambdaFct.Invoke(m._matrix(i, j))
+                Next
+            Next
+
+            Return c
+
+        End Function
 
     End Structure
 
