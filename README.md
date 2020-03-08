@@ -1,10 +1,16 @@
 # Vectorized-MultiLayerPerceptron
 
+https://github.com/PatriceDargenton/Vectorized_MultilayerPerceptron
+
 Vectorized Multi-Layer Perceptron in VB .NET from C# version https://github.com/HectorPulido/Vectorized-multilayer-neural-network
 
 This is the classical XOR test.
 
 # Versions
+
+08/03/2020 V1.0.3 Functionnal tests
+- Functionnal tests
+- Class clsVectorizedMatrixMLP
 
 25/01/2020 V1.0.2 Activation functions
 - addBiasColumn: bias column can be disabled optionally

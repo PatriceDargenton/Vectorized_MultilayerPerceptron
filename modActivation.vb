@@ -1,29 +1,29 @@
 ﻿
 Namespace ActivationFunction
 
-    Public Enum TActivationFunction
-        Sigmoid = 1
-        HyperbolicTangent = 2
+    'Public Enum TActivationFunction
+    '    Sigmoid = 1
+    '    HyperbolicTangent = 2
+    '    Gaussian = 3
+    '    Sinus = 4
+    '    ArcTangent = 5
 
-        ''' <summary>
-        ''' Exponential Linear Units
-        ''' </summary>
-        ELU = 3
+    '    ''' <summary>
+    '    ''' Exponential Linear Units
+    '    ''' </summary>
+    '    ELU = 6
 
-        ''' <summary>
-        ''' Rectified Linear Units (ReLU)
-        ''' </summary>
-        ReLU = 4
+    '    ''' <summary>
+    '    ''' Rectified Linear Units (ReLU)
+    '    ''' </summary>
+    '    ReLU = 7
 
-        ''' <summary>
-        ''' Rectified Linear Units (ReLU) with sigmoid for derivate
-        ''' </summary>
-        ReLUSigmoid = 5
+    '    ''' <summary>
+    '    ''' Rectified Linear Units (ReLU) with sigmoid for derivate
+    '    ''' </summary>
+    '    ReLUSigmoid = 8
 
-        Gaussian = 6
-        Sinus = 7
-        TangentArc = 8
-    End Enum
+    'End Enum
 
     ''' <summary>
     ''' Interface for all activation functions
@@ -58,7 +58,7 @@ Namespace ActivationFunction
         End Function
 
         Public Function Derivative#(x#, gain#, center#) Implements IActivationFunction.Derivative
-            Return CommonDerivate#(x#, gain#, center#)
+            Return CommonDerivate(x, gain, center)
         End Function
 
         Public Shared Function CommonDerivate#(x#, gain#, center#)
@@ -83,9 +83,9 @@ Namespace ActivationFunction
 
     End Class
 
-     ''' <summary>
-     ''' Implements f(x) = Hyperbolic Tangent
-     ''' </summary>
+    ''' <summary>
+    ''' Implements f(x) = Hyperbolic Tangent
+    ''' </summary>
     Public Class HyperbolicTangentFunction : Implements IActivationFunction
 
         Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
@@ -118,78 +118,6 @@ Namespace ActivationFunction
             Return False
         End Function
 
-    End Class
-
-    ''' <summary>
-    ''' Implements f(x) = Exponential Linear Unit (ELU)
-    ''' </summary>
-    Public Class ELUFunction : Implements IActivationFunction
-
-        Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
-
-            Dim xc# = x - center
-            Dim y#
-            If xc >= 0 Then
-                y = xc
-            Else
-                y = gain * (Math.Exp(xc) - 1)
-            End If
-            Return y
-
-        End Function
-
-        Public Function Derivative#(x#, gain#, center#) Implements IActivationFunction.Derivative
-
-            If gain < 0 Then Return 0
-
-            Dim y#
-            If x >= 0 Then
-                y = 1
-            Else
-                y = x + gain
-            End If
-
-            Return y
-
-        End Function
-
-        Public Function IsNonLinear() As Boolean Implements IActivationFunction.IsNonLinear
-            Return False
-        End Function
-
-    End Class
-
-    ''' <summary>
-    ''' Implements Rectified Linear Unit (ReLU)
-    ''' </summary>
-    Public Class ReluFunction : Implements IActivationFunction
-        Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
-            Dim xc# = x - center
-            Return Math.Max(xc * gain, 0)
-        End Function
-        Public Function Derivative#(x#, gain#, center#) Implements IActivationFunction.Derivative
-            If x >= center Then Return gain
-            Return 0
-        End Function
-        Public Function IsNonLinear() As Boolean Implements IActivationFunction.IsNonLinear
-            Return True
-        End Function
-    End Class
-
-    ''' <summary>
-    ''' Implements Rectified Linear Unit (ReLU) with sigmoid for derivate
-    ''' </summary>
-    Public Class ReluSigmoidFunction : Implements IActivationFunction
-        Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
-            Dim xc# = x - center
-            Return Math.Max(xc * gain, 0)
-        End Function
-        Public Function Derivative#(x#, gain#, center#) Implements IActivationFunction.Derivative
-            Return SigmoidFunction.CommonDerivate(x, gain, center) ' Sigmoid derivative
-        End Function
-        Public Function IsNonLinear() As Boolean Implements IActivationFunction.IsNonLinear
-            Return False
-        End Function
     End Class
 
     ''' <summary>
@@ -231,7 +159,7 @@ Namespace ActivationFunction
     End Class
 
     ''' <summary>
-    ''' Implements f(x) = sin(x)
+    ''' Implements f(x) = Sin(x)
     ''' </summary>
     Public Class SinusFunction : Implements IActivationFunction
         Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
@@ -248,7 +176,7 @@ Namespace ActivationFunction
     End Class
 
     ''' <summary>
-    ''' Implements f(x) = ArcTangent(x)
+    ''' Implements f(x) = Arc Tangent(x)
     ''' </summary>
     Public Class ArcTangentFunction : Implements IActivationFunction
         Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
@@ -260,6 +188,80 @@ Namespace ActivationFunction
             ' https://www.wolframalpha.com/input/?i=arctan(alpha+*+x)+derivative
             Dim y# = gain / (1 + gain * gain * xc * xc)
             Return y
+        End Function
+        Public Function IsNonLinear() As Boolean Implements IActivationFunction.IsNonLinear
+            Return False
+        End Function
+    End Class
+
+    ''' <summary>
+    ''' Implements f(x) = Exponential Linear Unit (ELU)
+    ''' </summary>
+    Public Class ELUFunction : Implements IActivationFunction
+
+        Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
+
+            Dim xc# = x - center
+            Dim y#
+            If xc >= 0 Then
+                y = xc
+            Else
+                y = gain * (Math.Exp(xc) - 1)
+            End If
+            Return y
+
+        End Function
+
+        Public Function Derivative#(x#, gain#, center#) Implements IActivationFunction.Derivative
+
+            If gain < 0 Then Return 0
+
+            Dim xc# = x - center
+            Dim y#
+            If xc >= 0 Then
+                y = 1
+            Else
+                'y = gain + f(x) : if f(x) = Activation(x, gain, center)
+                y = gain + Activation(x, gain, center)
+            End If
+
+            Return y
+
+        End Function
+
+        Public Function IsNonLinear() As Boolean Implements IActivationFunction.IsNonLinear
+            Return False
+        End Function
+
+    End Class
+
+    ''' <summary>
+    ''' Implements Rectified Linear Unit (ReLU)
+    ''' </summary>
+    Public Class ReLUFunction : Implements IActivationFunction
+        Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
+            Dim xc# = x - center
+            Return Math.Max(xc * gain, 0)
+        End Function
+        Public Function Derivative#(x#, gain#, center#) Implements IActivationFunction.Derivative
+            If x >= center Then Return gain
+            Return 0
+        End Function
+        Public Function IsNonLinear() As Boolean Implements IActivationFunction.IsNonLinear
+            Return True
+        End Function
+    End Class
+
+    ''' <summary>
+    ''' Implements Rectified Linear Unit (ReLU) with sigmoid for derivate
+    ''' </summary>
+    Public Class ReLUSigmoidFunction : Implements IActivationFunction
+        Public Function Activation#(x#, gain#, center#) Implements IActivationFunction.Activation
+            Dim xc# = x - center
+            Return Math.Max(xc * gain, 0)
+        End Function
+        Public Function Derivative#(x#, gain#, center#) Implements IActivationFunction.Derivative
+            Return SigmoidFunction.CommonDerivate(x, gain, center) ' Sigmoid derivative
         End Function
         Public Function IsNonLinear() As Boolean Implements IActivationFunction.IsNonLinear
             Return False

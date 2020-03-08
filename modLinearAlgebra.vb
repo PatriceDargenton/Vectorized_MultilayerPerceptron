@@ -5,9 +5,9 @@ Option Infer On ' Lambda function
 
 Imports System.Text ' StringBuilder
 
-Namespace VectorizedMultiLayerPerceptron
+Namespace VectorizedMatrixMLP
 
-    Friend Structure Matrix
+    Public Structure Matrix
 
         Private _matrix#(,)
 
@@ -415,7 +415,8 @@ Namespace VectorizedMultiLayerPerceptron
 
             Dim d# = 0
             MatrixLoop((Sub(i, j) d += m.matrix(i, j)), m.x, m.y)
-            Return d / (m.x * m.y)
+            Dim aver# = d / (m.x * m.y)
+            Return aver
 
         End Function
 
@@ -443,6 +444,25 @@ Namespace VectorizedMultiLayerPerceptron
             Next
 
             Return c
+
+        End Function
+
+        ''' <summary>
+        ''' Convert whole Matrix object to array
+        ''' </summary>
+        Public Function ToArray() As Single()
+
+            Dim array!() = New Single(Me._matrix.Length - 1) {}
+
+            Dim k% = 0
+            For i As Integer = 0 To Me.x - 1
+                For j As Integer = 0 To Me.y - 1
+                    array(k) = CSng(Me._matrix(i, j))
+                    k += 1
+                Next
+            Next
+
+            Return array
 
         End Function
 
