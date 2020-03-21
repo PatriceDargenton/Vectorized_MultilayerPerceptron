@@ -8,6 +8,12 @@ This is the classical XOR test.
 
 # Versions
 
+21/03/2020 V1.0.4 Functionnal tests (2)
+- OneIteration: Optional PrintOutput As Boolean = False
+- Matrix: Implicit conversion operator !(,) -> Matrix
+- clsVectorizedMatrixMLP: ComputeError, ComputeAverageError
+- clsVectorizedMatrixMLP: variable names in camelCase
+
 08/03/2020 V1.0.3 Functionnal tests
 - Functionnal tests
 - Class clsVectorizedMatrixMLP

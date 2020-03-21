@@ -64,6 +64,22 @@ Namespace VectorizedMatrixMLP
             _matrix = matrix
         End Sub
 
+        Public Sub New(matrix!(,))
+            Dim x% = matrix.GetLength(0)
+            Dim y% = matrix.GetLength(1)
+            _matrix = New Double(x - 1, y - 1) {}
+            For i As Integer = 0 To x - 1
+                For j As Integer = 0 To y - 1
+                    _matrix(i, j) = matrix(i, j)
+                Next
+            Next
+        End Sub
+
+        ' Implicit conversion operator !(,) -> Matrix
+        Public Shared Widening Operator CType(matrix(,) As Single) As Matrix
+            Return New Matrix(matrix)
+        End Operator
+
         ' Implicit conversion operator #(,) -> Matrix
         Public Shared Widening Operator CType(matrix(,) As Double) As Matrix
             Return New Matrix(matrix)
@@ -176,7 +192,7 @@ Namespace VectorizedMatrixMLP
             Return ToStringWithFormat()
         End Function
 
-        Private Function ToStringWithFormat$(Optional dec$ = "0.00")
+        Public Function ToStringWithFormat$(Optional dec$ = "0.00")
 
             Dim sb As New StringBuilder()
             sb.AppendLine("{")
@@ -284,7 +300,7 @@ Namespace VectorizedMatrixMLP
         End Function
 
         Public Shared Operator -(m1 As Matrix, m2 As Matrix) As Matrix
-            Return MatSum(m1, m2, True)
+            Return MatSum(m1, m2, neg:=True)
         End Operator
 
         Public Shared Operator -(m2 As Matrix, m1#) As Matrix
@@ -450,7 +466,26 @@ Namespace VectorizedMatrixMLP
         ''' <summary>
         ''' Convert whole Matrix object to array
         ''' </summary>
-        Public Function ToArray() As Single()
+        Public Function ToArray() As Double()
+
+            Dim array#() = New Double(Me._matrix.Length - 1) {}
+
+            Dim k% = 0
+            For i As Integer = 0 To Me.x - 1
+                For j As Integer = 0 To Me.y - 1
+                    array(k) = Me._matrix(i, j)
+                    k += 1
+                Next
+            Next
+
+            Return array
+
+        End Function
+
+        ''' <summary>
+        ''' Convert whole Matrix object to array
+        ''' </summary>
+        Public Function ToArraySingle() As Single()
 
             Dim array!() = New Single(Me._matrix.Length - 1) {}
 

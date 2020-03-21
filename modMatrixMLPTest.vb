@@ -22,17 +22,18 @@ Namespace VectorizedMatrixMLP
 
             Dim mlp As New clsVectorizedMatrixMLP
 
-            mlp.InputValue = New Double(,) {
+            mlp.input = New Double(,) {
                 {1, 0},
                 {0, 0},
                 {0, 1},
                 {1, 1}}
 
-            mlp.TargetValue = New Double(,) {
+            mlp.targetArray = New Single(,) {
                 {1},
                 {0},
                 {1},
                 {0}}
+            mlp.target = mlp.targetArray
 
             Dim NeuronCount%()
             NeuronCount = New Integer() {2, 2, 1}
@@ -70,7 +71,7 @@ Namespace VectorizedMatrixMLP
 
             mlp.Randomize()
 
-            mlp.Train()
+            mlp.Train(PrintOutput:=True)
 
         End Sub
 
