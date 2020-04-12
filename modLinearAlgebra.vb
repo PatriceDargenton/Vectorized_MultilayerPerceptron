@@ -20,6 +20,12 @@ Namespace VectorizedMatrixMLP
             End Set
         End Property
 
+        Public ReadOnly Property isDefined As Boolean
+            Get
+                Return Not IsNothing(_matrix)
+            End Get
+        End Property
+
         Public ReadOnly Property x%
             Get
                 Return _matrix.GetLength(0)
@@ -244,10 +250,14 @@ Namespace VectorizedMatrixMLP
 
         End Function
 
-        Public Shared Function Random(x%, y%, r As Random) As Matrix
+        Public Shared Function Random(x%, y%, r As Random,
+            Optional minValue! = 0, Optional maxValue! = 1) As Matrix
 
             Dim random_ = New Double(x - 1, y - 1) {}
-            MatrixLoop((Sub(i, j) random_(i, j) = r.NextDouble), x, y)
+            'MatrixLoop((Sub(i, j) random_(i, j) = r.NextDouble), x, y)
+            MatrixLoop((Sub(i, j) random_(i, j) =
+                Math.Round(r.NextDouble(minValue, maxValue),
+                clsMLPGeneric.roundWeights)), x, y)
             Return random_
 
         End Function

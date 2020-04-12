@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{30A826C1-407F-48B5-A9B5-3A3C7EED1CE9}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>Vectorized_Multilayer_Perceptron.VectorizedMatrixMLP.modMatrixVecMLPTest</StartupObject>
-    <RootNamespace>Vectorized_Multilayer_Perceptron</RootNamespace>
+    <StartupObject>Perceptron.VectorizedMatrixMLP.modMatrixVecMLPTest</StartupObject>
+    <RootNamespace>Perceptron</RootNamespace>
     <AssemblyName>Vectorized Multilayer Perceptron</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Console</MyType>
@@ -73,12 +73,17 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsMLPGeneric.vb" />
+    <Compile Include="clsMLPHelper.vb" />
+    <Compile Include="clsRndExtension.vb" />
     <Compile Include="clsVecMatrixMLP.vb" />
     <Compile Include="clsVecMatrixMLPTest.vb" />
     <Compile Include="modActivation.vb" />
     <Compile Include="modLinearAlgebra.vb" />
     <Compile Include="modMatrixMLPTest.vb" />
     <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="modMLPTest.vb" />
+    <Compile Include="modTests.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>

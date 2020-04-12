@@ -1,11 +1,12 @@
-﻿
+﻿Imports Perceptron.MLP.ActivationFunction
+
 ' Patrice Dargenton
 ' Vectorized-MultiLayerPerceptron
 ' From https://github.com/HectorPulido/Vectorized-multilayer-neural-network : C# -> VB .NET conversion
 
-Option Infer On ' Lambda function
+'Option Infer On ' Lambda function
 
-Imports System.Runtime.InteropServices ' OutAttribute
+'Imports System.Runtime.InteropServices ' OutAttribute
 
 Namespace VectorizedMatrixMLP
 
@@ -13,65 +14,43 @@ Namespace VectorizedMatrixMLP
 
         Sub Main()
             Console.WriteLine("Vectorized-MultiLayerPerceptron with the classical XOR test.")
-            MatrixMLPTest()
+            VectorizedMatrixMLPTest()
             Console.WriteLine("Press a key to quit.")
             Console.ReadKey()
         End Sub
 
-        Public Sub MatrixMLPTest()
+        Public Sub VectorizedMatrixMLPTest()
 
             Dim mlp As New clsVectorizedMatrixMLP
-
-            mlp.input = New Double(,) {
-                {1, 0},
-                {0, 0},
-                {0, 1},
-                {1, 1}}
-
-            mlp.targetArray = New Single(,) {
-                {1},
-                {0},
-                {1},
-                {0}}
+            mlp.input = m_inputArrayXOR
+            mlp.targetArray = m_targetArrayXOR
             mlp.target = mlp.targetArray
 
-            Dim NeuronCount%()
-            NeuronCount = New Integer() {2, 2, 1}
-            mlp.InitStruct(NeuronCount, addBiasColumn:=True)
-
-            mlp.activFct = New ActivationFunction.SigmoidFunction ' linear
             mlp.nbIterations = 10000 ' Sigmoid: works
-
-            'mlp.activFct = New ActivationFunction.HyperbolicTangentFunction ' linear
             'mlp.nbIterations = 5000 ' Hyperbolic tangent: works
-
-            'mlp.activFct = New ActivationFunction.GaussianFunction ' linear
             'mlp.nbIterations = 1000 ' Gaussian: works fine
-
-            'mlp.activFct = New ActivationFunction.SinusFunction ' linear
             'mlp.nbIterations = 500 ' Sinus: works fine
-
-            'mlp.activFct = New ActivationFunction.ArcTangentFunction ' linear
             'mlp.nbIterations = 1000 ' Arc tangent: works fine
-
-            'mlp.activFct = New ActivationFunction.ELUFunction  ' linear
             'mlp.nbIterations = 1000 ' ELU: works fine (but only one XOR)
-
-            'mlp.activFct = New ActivationFunction.ReLUFunction ' Non linear
             'mlp.nbIterations = 100000 ' ReLU: Does not work yet, but this next one yes:
-
-            'mlp.activFct = New ActivationFunction.ReLUSigmoidFunction ' linear
             'mlp.nbIterations = 5000 ' ReLUSigmoid: works fine
+            mlp.SetActivationFunction(TActivationFunction.Sigmoid, gain:=1, center:=0)
 
-            mlp.lambdaFct = Function(x#) mlp.activFct.Activation(x, gain:=1, center:=0)
-            mlp.lambdaFctD = Function(x#) mlp.activFct.Derivative(x, gain:=1, center:=0)
-            mlp.activFctIsNonLinear = mlp.activFct.IsNonLinear
-
-            mlp.LearningRate = 0.1
+            mlp.InitStruct(m_neuronCountXOR, addBiasColumn:=True)
+            mlp.Init(learningRate:=0.1, weightAdjustment:=1)
 
             mlp.Randomize()
 
-            mlp.Train(PrintOutput:=True)
+            mlp.PrintWeights()
+
+            mlp.printOutput_ = True
+            mlp.TrainVector()
+
+            'mlp.vectorizedLearningMode = False
+            'mlp.inputArray = m_inputArrayXOR
+            'mlp.Train(clsMLPGeneric.enumLearningMode.Systematique)
+            'mlp.Train(clsMLPGeneric.enumLearningMode.SemiStochastique) ' Does not work yet
+            'mlp.Train(clsMLPGeneric.enumLearningMode.Stochastique) ' Does not work yet
 
         End Sub
 
