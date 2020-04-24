@@ -1,7 +1,5 @@
 # Vectorized-MultiLayerPerceptron
 
-https://github.com/PatriceDargenton/Vectorized_MultilayerPerceptron
-
 Vectorized Multi-Layer Perceptron in VB .NET from C# version https://github.com/HectorPulido/Vectorized-multilayer-neural-network
 
 This is the classical XOR test.
@@ -34,5 +32,3 @@ This is the classical XOR test.
 - Activation functions
 
 31/12/2019 V1.01 Initial commit: C# -> VB .NET
-
-Patrice Dargenton.
