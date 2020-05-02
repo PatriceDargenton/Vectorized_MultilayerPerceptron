@@ -6,6 +6,10 @@ This is the classical XOR test.
 
 # Versions
 
+02/05/2020 V1.07
+- PrintParameters: activation function name displayed
+- Faster tests
+
 17/04/2020 V1.06
 - Activation function added: Double threshold
 - Print output standardized
