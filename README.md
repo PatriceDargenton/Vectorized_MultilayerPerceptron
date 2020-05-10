@@ -6,6 +6,9 @@ This is the classical XOR test.
 
 # Versions
 
+10/05/2020 V1.09
+- Faster tests
+
 10/05/2020 V1.08
 - Homogenization of function names
 - clsMLPGeneric: PrintParameters: parameters added
