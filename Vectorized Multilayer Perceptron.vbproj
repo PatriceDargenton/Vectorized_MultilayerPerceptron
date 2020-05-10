@@ -82,6 +82,7 @@
     <Compile Include="modLinearAlgebra.vb" />
     <Compile Include="modMatrixMLPTest.vb" />
     <Compile Include="AssemblyInfo.vb" />
+    <Compile Include="modMLPHelper.vb" />
     <Compile Include="modMLPTest.vb" />
     <Compile Include="modTests.vb" />
     <Compile Include="My Project\Application.Designer.vb">
