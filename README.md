@@ -6,6 +6,13 @@ This is the classical XOR test.
 
 # Versions
 
+06/06/2020 V1.11
+- Source code cleaned
+- Weight adjustment
+- ComputeAverageError: in generic class
+- Tests added for semi-stochastic and stochastic learning mode
+- TrainSemiStochastic: fixed
+
 16/05/2020 V1.10
 - Faster tests
 

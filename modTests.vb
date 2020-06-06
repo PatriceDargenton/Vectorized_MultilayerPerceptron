@@ -3,7 +3,7 @@ Module modTests
 
     Sub Main()
 
-        VectorizedMatrixMLP.VectorizedMatrixMLPTest()
+        VectorizedMatrixMLPTest()
         Console.WriteLine("Press a key to quit.")
         Console.ReadKey()
 

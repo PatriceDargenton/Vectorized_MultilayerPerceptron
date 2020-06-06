@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{30A826C1-407F-48B5-A9B5-3A3C7EED1CE9}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>Perceptron.VectorizedMatrixMLP.modMatrixVecMLPTest</StartupObject>
+    <StartupObject>Perceptron.modMatrixVecMLPTest</StartupObject>
     <RootNamespace>Perceptron</RootNamespace>
     <AssemblyName>Vectorized Multilayer Perceptron</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="clsMLPGeneric.vb" />
+    <Compile Include="clsMLPGenericVec.vb" />
     <Compile Include="clsMLPHelper.vb" />
     <Compile Include="clsRndExtension.vb" />
     <Compile Include="clsVecMatrixMLP.vb" />
