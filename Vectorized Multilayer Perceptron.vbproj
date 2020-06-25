@@ -73,6 +73,8 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsMatrixHP.vb" />
+    <Compile Include="clsMatrixNL.vb" />
     <Compile Include="clsMLPGeneric.vb" />
     <Compile Include="clsMLPGenericVec.vb" />
     <Compile Include="clsMLPHelper.vb" />
@@ -80,7 +82,6 @@
     <Compile Include="clsVecMatrixMLP.vb" />
     <Compile Include="clsVecMatrixMLPTest.vb" />
     <Compile Include="modActivation.vb" />
-    <Compile Include="modLinearAlgebra.vb" />
     <Compile Include="modMatrixMLPTest.vb" />
     <Compile Include="AssemblyInfo.vb" />
     <Compile Include="modMLPHelper.vb" />
