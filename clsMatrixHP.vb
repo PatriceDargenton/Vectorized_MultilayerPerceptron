@@ -10,6 +10,7 @@ Namespace Utility
 
     ' Hector Pulido implementation's : 12 sec
     ' Nikos Labiris implementation's : 7.4 sec : 1.5 times faster
+    ' MathNet       implementation's : 8.2 sec
 #Const Implementation = 0 ' 0 : Off, 1 : On
 
     ' From https://github.com/HectorPulido/Machine-learning-Framework-Csharp 
@@ -80,7 +81,7 @@ Namespace Utility
         ''' </summary>
         Public ReadOnly Property T As Matrix
             Get
-                Return Transpose(Me)
+                Return Transpose_(Me)
             End Get
         End Property
 
@@ -113,17 +114,17 @@ Namespace Utility
             Me.data = New Double(rows - 1, columns - 1) {}
         End Sub
 
-        Public Sub New(matrix0#(,))
-            Me.data = matrix0
+        Public Sub New(doubleArray#(,))
+            Me.data = doubleArray
         End Sub
 
-        Public Sub New(matrix0!(,))
-            Dim rows = matrix0.GetLength(0)
-            Dim columns = matrix0.GetLength(1)
+        Public Sub New(singleArray!(,))
+            Dim rows = singleArray.GetLength(0)
+            Dim columns = singleArray.GetLength(1)
             Me.data = New Double(rows - 1, columns - 1) {}
             For i = 0 To rows - 1
                 For j = 0 To columns - 1
-                    Me.data(i, j) = matrix0(i, j)
+                    Me.data(i, j) = singleArray(i, j)
                 Next
             Next
         End Sub
@@ -146,8 +147,8 @@ Namespace Utility
 #Region "Operators"
 
         ' Implicit conversion operator #(,) -> Matrix
-        Public Shared Widening Operator CType(matrix0#(,)) As Matrix
-            Return New Matrix(matrix0)
+        Public Shared Widening Operator CType(doubleArray#(,)) As Matrix
+            Return New Matrix(doubleArray)
         End Operator
 
         ' Implicit conversion operator Matrix -> #(,)
@@ -156,8 +157,8 @@ Namespace Utility
         End Operator
 
         ' Implicit conversion operator !(,) -> Matrix
-        Public Shared Widening Operator CType(matrix0!(,)) As Matrix
-            Return New Matrix(matrix0)
+        Public Shared Widening Operator CType(singleArray!(,)) As Matrix
+            Return New Matrix(singleArray)
         End Operator
 
         Public Shared Operator +(m1 As Matrix, m2 As Matrix) As Matrix
@@ -242,7 +243,7 @@ Namespace Utility
 
         End Function
 
-        Public Shared Function Transpose(m As Matrix) As Matrix
+        Private Shared Function Transpose_(m As Matrix) As Matrix
 
             Dim mT = New Double(m.c - 1, m.r - 1) {}
             'MatrixLoop((Sub(i, j) mT(j, i) = m.matrixP(i, j)), m.r, m.c)
@@ -256,8 +257,8 @@ Namespace Utility
         ''' Transpose and multiply this transposed matrix by m
         ''' </summary>
         Public Shared Function TransposeAndMultiply1(original As Matrix, m As Matrix) As Matrix
-            Dim original_t As Matrix = Transpose(original)
-            Dim result As Matrix = original_t * m
+            'Dim original_t As Matrix = Transpose(original)
+            Dim result As Matrix = original.T * m
             Return result
         End Function
 
@@ -265,8 +266,8 @@ Namespace Utility
         ''' Transpose and multiply a matrix m by this transposed one
         ''' </summary>
         Public Shared Function TransposeAndMultiply2(original As Matrix, m As Matrix) As Matrix
-            Dim original_t As Matrix = Transpose(original)
-            Dim result As Matrix = m * original_t
+            'Dim original_t As Matrix = Transpose(original)
+            Dim result As Matrix = m * original.T
             Return result
         End Function
 
