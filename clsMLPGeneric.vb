@@ -2,7 +2,7 @@
 Imports Perceptron.MLP.ActivationFunction
 Imports Perceptron.Utility ' Matrix
 
-Public MustInherit Class clsMLPGeneric
+Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic class
 
 #Region "Declaration"
 
@@ -41,6 +41,7 @@ Public MustInherit Class clsMLPGeneric
     End Enum
 
     Public printOutput_ As Boolean = False
+    Public printOutputMatrix As Boolean = False
     Public useBias As Boolean = False
 
     Public inputArray!(,)
@@ -62,6 +63,26 @@ Public MustInherit Class clsMLPGeneric
     ''' Last error of the output matrix
     ''' </summary>
     Protected lastError As Matrix
+
+    ''' <summary>
+    ''' Result success matrix (1: success, 0: fail)
+    ''' </summary>
+    Protected success As Matrix
+
+    ''' <summary>
+    ''' Number of success according to the treshold between target and output
+    ''' </summary>
+    Protected nbSuccess%
+
+    ''' <summary>
+    ''' Percentage of success according to the number of ouputs 
+    ''' </summary>
+    Protected successPC!
+
+    ''' <summary>
+    ''' Output must be 10% close to target to be considered successful
+    ''' </summary>
+    Protected Const minimalSuccessTreshold! = 0.1 ' 10%
 
     Public nbIterations%
 
@@ -213,12 +234,27 @@ Public MustInherit Class clsMLPGeneric
     ''' <summary>
     ''' Compute error of the output matrix for all samples
     ''' </summary>
-    Public MustOverride Sub ComputeError()
+    Public Overridable Sub ComputeError()
+        ' Calculate the error: ERROR = TARGETS - OUTPUTS
+        Dim m As Matrix = Me.targetArray
+        Me.lastError = m - Me.output
+        ComputeSuccess()
+    End Sub
+
+    Public Overridable Sub ComputeSuccess()
+        Me.success = Me.lastError.Threshold(minimalSuccessTreshold)
+        Dim sum# = Me.success.Sumatory()(0, 0)
+        Me.nbSuccess = CInt(Math.Round(sum))
+        Me.successPC = CSng(Me.nbSuccess / (Me.success.r * Me.success.c))
+    End Sub
 
     ''' <summary>
     ''' Compute average error of the output matrix for all samples from last error layer
     ''' </summary>
-    Public MustOverride Sub ComputeAverageErrorFromLastError()
+    Public Overridable Sub ComputeAverageErrorFromLastError()
+        ' Compute first abs then average:
+        Me.averageError = CSng(Me.lastError.Abs.Average)
+    End Sub
 
     ''' <summary>
     ''' Compute average error of the output matrix for all samples
@@ -356,6 +392,12 @@ Public MustInherit Class clsMLPGeneric
 
     End Sub
 
+    ''' <summary>
+    ''' Close the training session
+    ''' </summary>
+    Public Overridable Sub CloseSession()
+    End Sub
+
 #End Region
 
 #Region "Test"
@@ -368,7 +410,10 @@ Public MustInherit Class clsMLPGeneric
     ''' <summary>
     ''' Test one sample: Propagate the input signal into the MLP and return the ouput
     ''' </summary>
-    Public MustOverride Sub TestOneSample(input!(), ByRef ouput!())
+    Public Overridable Sub TestOneSample(input!(), ByRef ouput!())
+        TestOneSample(input)
+        ouput = Me.lastOutputArray1DSingle
+    End Sub
 
     ''' <summary>
     ''' Test all samples
@@ -397,7 +442,16 @@ Public MustInherit Class clsMLPGeneric
     ''' </summary>
     Public MustOverride Sub PrintWeights()
 
-    Public MustOverride Sub PrintOutput(iteration%)
+    Public Overridable Sub PrintOutput(iteration%)
+
+        If ShowThisIteration(iteration) Then
+            Dim nbTargets = Me.targetArray.GetLength(1)
+            TestAllSamples(Me.inputArray, nbTargets)
+            ComputeAverageError()
+            PrintSuccess(iteration)
+        End If
+
+    End Sub
 
     Public Sub PrintParameters()
 
@@ -424,8 +478,19 @@ Public MustInherit Class clsMLPGeneric
     End Function
 
     Public Sub ShowMessage(msg$)
-        Console.WriteLine(msg)
+        If isConsoleApp() Then Console.WriteLine(msg)
         Debug.WriteLine(msg)
+    End Sub
+
+    Protected Sub PrintSuccess(iteration%)
+        Dim msg$ = vbLf & "Iteration n°" & iteration + 1 & "/" & nbIterations & vbLf
+        If Me.printOutputMatrix Then msg &= "Output: " & Me.output.ToString() & vbLf
+        msg &=
+            "Average error: " & Me.averageError.ToString(format6Dec) & vbLf &
+            "Success (" & (minimalSuccessTreshold).ToString("0%") & "): " &
+            Me.nbSuccess & "/" & Me.success.r * Me.success.c & ": " &
+            Me.successPC.ToString("0.0%")
+        ShowMessage(msg)
     End Sub
 
 #End Region

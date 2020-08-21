@@ -39,9 +39,21 @@ Public MustInherit Class clsVectorizedMLPGeneric : Inherits clsMLPGeneric
         MyBase.TrainSemiStochastic(inputs, targets)
     End Sub
 
-    Public Overrides Sub TestOneSample(input!(), ByRef ouput!())
-        TestOneSample(input)
-        ouput = Me.lastOutputArray1DSingle
+    Public Overridable Sub SetOuput1D()
+    End Sub
+
+    Public Overrides Sub PrintOutput(iteration%)
+
+        If ShowThisIteration(iteration) Then
+            If Not Me.vectorizedLearningMode Then
+                Dim nbTargets = Me.targetArray.GetLength(1)
+                TestAllSamples(Me.inputArray, nbOutputs:=nbTargets)
+            End If
+            SetOuput1D()
+            ComputeAverageError()
+            PrintSuccess(iteration)
+        End If
+
     End Sub
 
 End Class
