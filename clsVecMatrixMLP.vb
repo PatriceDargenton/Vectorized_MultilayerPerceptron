@@ -56,9 +56,10 @@ Namespace VectorizedMatrixMLP
 
             Me.vectorizedLearningMode = True
             For iteration = 0 To Me.nbIterations - 1
-                TrainAllSamplesInternal()
+                TrainVectorOneIteration()
                 If Me.printOutput_ Then PrintOutput(iteration)
             Next
+            ComputeAverageError()
 
         End Sub
 
@@ -98,7 +99,7 @@ Namespace VectorizedMatrixMLP
             ComputeGradientAndAdjustWeights()
         End Sub
 
-        Public Sub TrainAllSamplesInternal()
+        Public Overrides Sub TrainVectorOneIteration()
             ForwardPropagateSignal()
             BackwardPropagateError()
         End Sub
@@ -195,7 +196,7 @@ Namespace VectorizedMatrixMLP
             SetInputOneSample(input)
             SetTargetOneSample(target)
             Me.exampleCount = 1
-            TrainAllSamplesInternal()
+            TrainVectorOneIteration()
         End Sub
 
         Private Sub SetInputOneSample(input!())
@@ -249,15 +250,16 @@ Namespace VectorizedMatrixMLP
 
         End Sub
 
-        Public Overrides Sub PrintOutput(iteration%)
+        Public Overrides Sub PrintOutput(iteration%, Optional force As Boolean = False)
 
-            If ShowThisIteration(iteration) Then
+            If force OrElse ShowThisIteration(iteration) Then
 
                 If Not Me.vectorizedLearningMode Then
                     Dim nbTargets = Me.targetArray.GetLength(1)
                     TestAllSamples(Me.inputArray, nbOutputs:=nbTargets)
+                Else
+                    ComputeAverageError()
                 End If
-                ComputeAverageError()
                 PrintSuccess(iteration)
 
                 'For i = 0 To Me.LayerCount - 1

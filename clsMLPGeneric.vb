@@ -2,7 +2,10 @@
 Imports Perceptron.MLP.ActivationFunction
 Imports Perceptron.Utility ' Matrix
 
-Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic class
+''' <summary>
+''' MultiLayer Perceptron (MLP) generic class
+''' </summary>
+Public MustInherit Class clsMLPGeneric
 
 #Region "Declaration"
 
@@ -35,9 +38,13 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
         ''' </summary>
         Stochastic = 2
         ''' <summary>
-        ''' Leanr all samples in order as a vector
+        ''' Learn all samples in order as a vector
         ''' </summary>
         Vectorial = 3
+        ''' <summary>
+        ''' Learn all samples in order as a vector for a batch of iterations
+        ''' </summary>
+        VectorialBatch = 4
     End Enum
 
     Public printOutput_ As Boolean = False
@@ -77,16 +84,17 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
     ''' <summary>
     ''' Percentage of success according to the number of ouputs 
     ''' </summary>
-    Protected successPC!
+    Public successPC!
 
     ''' <summary>
     ''' Output must be 10% close to target to be considered successful
     ''' </summary>
-    Protected Const minimalSuccessTreshold! = 0.1 ' 10%
+    Public minimalSuccessTreshold! = 0.1 ' 10%
 
     Public nbIterations%
 
     Protected layerCount%
+    Protected neuronCount%()
 
     ''' <summary>
     ''' Learning rate of the MLP (Eta coeff.)
@@ -99,7 +107,7 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
     ''' </summary>
     Public weightAdjustment!
 
-    Public Sub Initialize(learningRate!, weightAdjustment!)
+    Public Sub Initialize(learningRate!, Optional weightAdjustment! = 0)
 
         Me.learningRate = learningRate
         Me.weightAdjustment = weightAdjustment
@@ -153,7 +161,9 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
     ''' <summary>
     ''' Set registered activation function
     ''' </summary>
-    Public Overridable Sub SetActivationFunction(actFnc As enumActivationFunction, gain!, center!)
+    Public Overridable Sub SetActivationFunction(actFnc As enumActivationFunction,
+        Optional gain! = 1,
+        Optional center! = 0)
 
         Select Case actFnc
             Case enumActivationFunction.Undefined : Me.activFnc = Nothing
@@ -186,7 +196,7 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
     ''' Activation function using optimised derivative: 
     ''' </summary>
     Public Overridable Sub SetActivationFunctionOptimized(
-        fctAct As enumActivationFunctionOptimized, gain!, center!)
+        fctAct As enumActivationFunctionOptimized, Optional gain! = 1, Optional center! = 0)
 
         Select Case fctAct
             Case enumActivationFunctionOptimized.Sigmoid
@@ -278,7 +288,17 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
     ''' Train all samples (run epoch for one iteration)
     ''' </summary>
     Public Sub Train(Optional learningMode As enumLearningMode = enumLearningMode.Defaut)
+
+        Dim sw As New Stopwatch
+        sw.Start()
+        Debug.WriteLine(Now() & " Train...")
         Train(Me.inputArray, Me.targetArray, Me.nbIterations, learningMode)
+        sw.Stop()
+        Debug.WriteLine(Now() & " Train: Done. " &
+            sw.Elapsed.TotalSeconds.ToString("0.0") & " sec.")
+        ' If it is not already printed, print now
+        If Not Me.printOutput_ Then PrintSuccess(Me.nbIterations - 1)
+
     End Sub
 
     Public Sub Train(nbIterations%,
@@ -296,7 +316,7 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
 
         Me.nbIterations = nbIterations
         Select Case learningMode
-            Case enumLearningMode.Vectorial
+            Case enumLearningMode.Vectorial, enumLearningMode.VectorialBatch
                 TrainSystematic(inputs, targets, learningMode)
             Case enumLearningMode.Systematic
                 TrainSystematic(inputs, targets)
@@ -431,6 +451,7 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
             Next
         Next
         Me.output = outputs
+        ComputeAverageError()
     End Sub
 
 #End Region
@@ -442,9 +463,9 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
     ''' </summary>
     Public MustOverride Sub PrintWeights()
 
-    Public Overridable Sub PrintOutput(iteration%)
+    Public Overridable Sub PrintOutput(iteration%, Optional force As Boolean = False)
 
-        If ShowThisIteration(iteration) Then
+        If force OrElse ShowThisIteration(iteration) Then
             Dim nbTargets = Me.targetArray.GetLength(1)
             TestAllSamples(Me.inputArray, nbTargets)
             ComputeAverageError()
@@ -459,18 +480,20 @@ Public MustInherit Class clsMLPGeneric ' MultiLayer Perceptron (MLP) generic cla
         ShowMessage(Now() & " :")
         ShowMessage("")
         ShowMessage("layer count=" & Me.layerCount)
+        ShowMessage("neuron count=" & clsMLPHelper.ArrayToString(Me.neuronCount))
         ShowMessage("use bias=" & Me.useBias)
-        ShowMessage("learning rate=" & Me.learningRate)
-        ShowMessage("weight adjustment=" & Me.weightAdjustment)
+        If Me.learningRate <> 0 Then ShowMessage("learning rate=" & Me.learningRate)
+        If Me.weightAdjustment <> 0 Then ShowMessage("weight adjustment=" & Me.weightAdjustment)
         ShowMessage("activation function=" & clsMLPHelper.ReadEnumDescription(Me.m_actFunc))
         ShowMessage("gain=" & Me.m_gain)
-        ShowMessage("center=" & Me.m_center)
+        If Me.m_center <> 0 Then ShowMessage("center=" & Me.m_center)
         ShowMessage("")
 
     End Sub
 
     Public Function ShowThisIteration(iteration%) As Boolean
         If (iteration < 10 OrElse
+            ((iteration + 1) Mod 10 = 0 AndAlso iteration < 100) OrElse
             ((iteration + 1) Mod 100 = 0 AndAlso iteration < 1000) OrElse
             ((iteration + 1) Mod 1000 = 0 AndAlso iteration < 10000) OrElse
             (iteration + 1) Mod 10000 = 0) Then Return True

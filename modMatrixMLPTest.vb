@@ -7,23 +7,36 @@ Imports Perceptron.clsMLPGeneric ' enumLearningMode
 
 Module modMatrixVecMLPTest
 
-    Sub Main()
-        Console.WriteLine("Vectorized-MultiLayerPerceptron with the classical XOR test.")
-        VectorizedMatrixMLPTest()
+    Public Sub VectorizedMatrixMLPTest()
+
+        XORTest()
         NextTest()
-        VectorizedMatrixMLPTest(nbXor:=2)
-        NextTest()
-        VectorizedMatrixMLPTest(nbXor:=3)
-        Console.WriteLine("Press a key to quit.")
-        Console.ReadKey()
+
+        MLPGenericIrisTest(New VectorizedMatrixMLP.clsVectorizedMatrixMLP,
+            "Vectorized Matrix MLP Iris test")
+
     End Sub
 
-    Public Sub VectorizedMatrixMLPTest(Optional nbXor% = 1)
+    Public Sub XORTest()
+
+        Console.WriteLine("Vectorized Matrix MLP with the classical XOR test.")
+
+        VectorizedMatrixMLPXorTest()
+        NextTest()
+
+        VectorizedMatrixMLPXorTest(nbXor:=2)
+        NextTest()
+
+        VectorizedMatrixMLPXorTest(nbXor:=3)
+
+    End Sub
+
+    Public Sub VectorizedMatrixMLPXorTest(Optional nbXor% = 1)
 
         Dim mlp As New clsVectorizedMatrixMLP
 
-        mlp.ShowMessage("Vectorized Matrix MLP test")
-        mlp.ShowMessage("--------------------------")
+        mlp.ShowMessage("Vectorized Matrix MLP Xor test")
+        mlp.ShowMessage("------------------------------")
 
         mlp.inputArray = m_inputArrayXOR
         mlp.targetArray = m_targetArrayXOR
@@ -37,8 +50,8 @@ Module modMatrixVecMLPTest
         'mlp.nbIterations = 100000 ' ReLU: Does not work yet, but this next one yes:
         'mlp.nbIterations = 5000 ' ReLUSigmoid: works fine
         'mlp.nbIterations = 5000 ' Double threshold: works fine
-        mlp.SetActivationFunction(enumActivationFunction.Sigmoid, gain:=1, center:=0)
-        'mlp.SetActivationFunction(enumActivationFunction.HyperbolicTangent, gain:=2, center:=0)
+        mlp.SetActivationFunction(enumActivationFunction.Sigmoid)
+        'mlp.SetActivationFunction(enumActivationFunction.HyperbolicTangent, gain:=2)
 
         mlp.printOutput_ = True
         mlp.printOutputMatrix = False
@@ -75,20 +88,13 @@ Module modMatrixVecMLPTest
         'mlp.Train(enumLearningMode.SemiStochastic) ' Works
         'mlp.Train(enumLearningMode.Stochastic) ' Works
 
-        mlp.ShowMessage("Vectorized Matrix MLP test: Done.")
+        mlp.ShowMessage("Vectorized Matrix MLP Xor test: Done.")
 
-    End Sub
+        If nbXor > 1 Then Exit Sub
 
-    Private Sub NextTest()
-        Console.WriteLine("Press a key to continue.")
-        Console.ReadKey()
-        Console.WriteLine()
-    End Sub
+        WaitForKeyToContinue("Press a key to print MLP weights")
+        mlp.PrintWeights()
 
-    Public Sub WaitForKeyToStart()
-        If Not isConsoleApp() Then Exit Sub
-        Console.WriteLine("Press a key to start.")
-        Console.ReadKey()
     End Sub
 
 End Module

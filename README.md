@@ -6,6 +6,18 @@ This is the classical XOR test.
 
 # Versions
 
+20/09/2020 V1.15
+- Hyperbolic Tangent (Tanh) gain inversion: gain:=-2 -> gain:=2
+- clsMLPGeneric.Initialize: weightAdjustment optional
+- clsVectorizedMLPGeneric.neuronCount -> clsMLPGeneric, and displayed in PrintParameters()
+- Compute success and fails after Train()
+- Iris flower test added: https://en.wikipedia.org/wiki/Iris_flower_data_set
+- Activation function: gain and center optional
+- Learning mode added: VectorialBatch (learn all samples in order as a vector for a batch of iterations)
+- PrintWeights added for one XOR tests
+- PrintOutput: option force display added
+- Refactored code in clsMLPGenericVec: TrainVectorOneIteration(), SetOuput1D()
+
 21/08/2020 V1.14
 - ComputeSuccess added
 - Tests added: 2 XOR and 3 XOR

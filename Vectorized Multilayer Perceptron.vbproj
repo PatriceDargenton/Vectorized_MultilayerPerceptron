@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{30A826C1-407F-48B5-A9B5-3A3C7EED1CE9}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <StartupObject>Perceptron.modMatrixVecMLPTest</StartupObject>
+    <StartupObject>Sub Main</StartupObject>
     <RootNamespace>Perceptron</RootNamespace>
     <AssemblyName>Vectorized Multilayer Perceptron</AssemblyName>
     <FileAlignment>512</FileAlignment>
