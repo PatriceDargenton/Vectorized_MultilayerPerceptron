@@ -6,6 +6,13 @@ This is the classical XOR test.
 
 # Versions
 
+04/10/2020 V1.16
+- Iris flower prediction test added
+- Hyperbolic Tangent (Tanh) derivative fixed
+- clsMLPGeneric.TestAllSamples: simplified
+- clsMLPGeneric.PrintParameters: minimalSuccessTreshold displayed
+- clsMLPGeneric.ShowThisIteration: also for last iteration
+
 20/09/2020 V1.15
 - Hyperbolic Tangent (Tanh) gain inversion: gain:=-2 -> gain:=2
 - clsMLPGeneric.Initialize: weightAdjustment optional
