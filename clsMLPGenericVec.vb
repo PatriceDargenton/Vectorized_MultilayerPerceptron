@@ -2,6 +2,7 @@
 Public MustInherit Class clsVectorizedMLPGeneric : Inherits clsMLPGeneric
 
     Public vectorizedLearningMode As Boolean = True
+
     Public exampleCount%
 
     'Protected neuronCount%()
@@ -23,6 +24,8 @@ Public MustInherit Class clsVectorizedMLPGeneric : Inherits clsMLPGeneric
     Public Overridable Sub TrainVectorBatch(nbIterationsBatch%)
 
         ' Default implementation: call TrainVectorOneIteration()
+        Me.learningMode = enumLearningMode.VectorialBatch
+        Me.vectorizedLearningMode = True
         For iteration = 0 To nbIterationsBatch - 1
             TrainVectorOneIteration()
         Next
@@ -35,6 +38,7 @@ Public MustInherit Class clsVectorizedMLPGeneric : Inherits clsMLPGeneric
     ''' </summary>
     Public Overridable Sub TrainVectorBatch()
 
+        Me.learningMode = enumLearningMode.VectorialBatch
         Me.vectorizedLearningMode = True
 
         If Not Me.printOutput_ Then
@@ -94,6 +98,7 @@ Public MustInherit Class clsVectorizedMLPGeneric : Inherits clsMLPGeneric
     Public Overrides Sub TrainSystematic(inputs!(,), targets!(,),
             Optional learningMode As enumLearningMode = enumLearningMode.Defaut)
 
+        Me.learningMode = learningMode
         If learningMode = enumLearningMode.VectorialBatch Then
             TrainVectorBatch()
             Exit Sub
@@ -111,12 +116,14 @@ Public MustInherit Class clsVectorizedMLPGeneric : Inherits clsMLPGeneric
     End Sub
 
     Public Overrides Sub TrainStochastic(inputs!(,), targets!(,))
+        Me.learningMode = enumLearningMode.Stochastic
         Me.vectorizedLearningMode = False
         Me.exampleCount = 1
         MyBase.TrainStochastic(inputs, targets)
     End Sub
 
     Public Overrides Sub TrainSemiStochastic(inputs!(,), targets!(,))
+        Me.learningMode = enumLearningMode.SemiStochastic
         Me.vectorizedLearningMode = False
         Me.exampleCount = 1
         MyBase.TrainSemiStochastic(inputs, targets)

@@ -724,24 +724,24 @@ Namespace Utility
         End Function
 
         Public Shared Function Randomize(r%, c%, rnd As Random,
-            Optional minValue! = 0, Optional maxValue! = 1) As Matrix
+            Optional minValue! = -0.5!, Optional maxValue! = 0.5!) As Matrix
 
             Dim random_ = New Double(r - 1, c - 1) {}
             'MatrixLoop((Sub(i, j) random_(i, j) = rnd.NextDouble), x, y)
             MatrixLoop((Sub(i, j) random_(i, j) =
                 Math.Round(rnd.NextDouble(minValue, maxValue),
-                    clsMLPGeneric.roundWeights)), r, c)
+                    clsMLPGeneric.nbRoundingDigits)), r, c)
             Dim m As Matrix = random_
             Return m
 
         End Function
 
         Public Sub Randomize(rnd As Random,
-            Optional minValue! = 0, Optional maxValue! = 1)
+            Optional minValue! = -0.5!, Optional maxValue! = 0.5!)
 
             MatrixLoop((Sub(i, j) Me.data(i, j) =
                 Math.Round(rnd.NextDouble(minValue, maxValue),
-                    clsMLPGeneric.roundWeights)), Me.r, Me.c)
+                    clsMLPGeneric.nbRoundingDigits)), Me.r, Me.c)
 
         End Sub
 

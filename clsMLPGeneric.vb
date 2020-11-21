@@ -19,7 +19,7 @@ Public MustInherit Class clsMLPGeneric
     ''' <summary>
     ''' Round random weights to reproduce functionnal tests exactly
     ''' </summary>
-    Public Const roundWeights% = 2
+    Public Const nbRoundingDigits% = 2
 
     Public Const expMax! = 50
 
@@ -46,6 +46,11 @@ Public MustInherit Class clsMLPGeneric
         ''' </summary>
         VectorialBatch = 4
     End Enum
+
+    ''' <summary>
+    ''' Learning mode of the MLP
+    ''' </summary>
+    Public learningMode As enumLearningMode
 
     Public printOutput_ As Boolean = False
     Public printOutputMatrix As Boolean = False
@@ -158,6 +163,11 @@ Public MustInherit Class clsMLPGeneric
     Protected m_center!
     Protected m_actFunc As enumActivationFunction = enumActivationFunction.Undefined
 
+    Public Overridable Function GetActivationFunctionType() As enumActivationFunctionType
+        Return enumActivationFunctionType.Normal
+    End Function
+
+
     ''' <summary>
     ''' Set registered activation function
     ''' </summary>
@@ -178,7 +188,8 @@ Public MustInherit Class clsMLPGeneric
             Case enumActivationFunction.ReLuSigmoid : Me.activFnc = New ReLuSigmoidFunction
             Case enumActivationFunction.DoubleThreshold : Me.activFnc = New DoubleThresholdFunction
             Case Else
-                Stop
+                Me.activFnc = Nothing
+                Throw New ArgumentException("Activation function undefined!")
         End Select
 
         If Not IsNothing(Me.activFnc) Then
@@ -210,6 +221,8 @@ Public MustInherit Class clsMLPGeneric
                 Me.activFnc = New ELUFunction
             Case Else
                 Me.activFnc = Nothing
+                Me.m_actFunc = enumActivationFunction.Undefined
+                Throw New ArgumentException("Activation function undefined!")
         End Select
 
         Me.lambdaFnc = Function(x#) Me.activFnc.Activation(x, gain, center)
@@ -235,7 +248,10 @@ Public MustInherit Class clsMLPGeneric
     ''' <summary>
     ''' Randomize weights
     ''' </summary>
-    Public MustOverride Sub Randomize(Optional minValue! = 0, Optional maxValue! = 1)
+    Public MustOverride Sub Randomize(Optional minValue! = -0.5!, Optional maxValue! = 0.5!)
+
+    Public Overridable Sub RoundWeights()
+    End Sub
 
 #End Region
 
@@ -247,6 +263,16 @@ Public MustInherit Class clsMLPGeneric
     Public Overridable Sub ComputeError()
         ' Calculate the error: ERROR = TARGETS - OUTPUTS
         Dim m As Matrix = Me.targetArray
+        Me.lastError = m - Me.output
+        ComputeSuccess()
+    End Sub
+
+    ''' <summary>
+    ''' Compute error of the output matrix for one sample
+    ''' </summary>
+    Public Overridable Sub ComputeErrorOneSample(targetArray!(,))
+        ' Calculate the error: ERROR = TARGETS - OUTPUTS
+        Dim m As Matrix = targetArray
         Me.lastError = m - Me.output
         ComputeSuccess()
     End Sub
@@ -271,6 +297,15 @@ Public MustInherit Class clsMLPGeneric
     ''' </summary>
     Public Overridable Function ComputeAverageError!()
         Me.ComputeError()
+        Me.ComputeAverageErrorFromLastError()
+        Return Me.averageError
+    End Function
+
+    ''' <summary>
+    ''' Compute average error of the output matrix for one sample
+    ''' </summary>
+    Public Overridable Function ComputeAverageErrorOneSample!(targetArray!(,))
+        Me.ComputeErrorOneSample(targetArray)
         Me.ComputeAverageErrorFromLastError()
         Return Me.averageError
     End Function
@@ -315,6 +350,7 @@ Public MustInherit Class clsMLPGeneric
         Optional learningMode As enumLearningMode = enumLearningMode.Defaut)
 
         Me.nbIterations = nbIterations
+        Me.learningMode = learningMode
         Select Case learningMode
             Case enumLearningMode.Vectorial, enumLearningMode.VectorialBatch
                 TrainSystematic(inputs, targets, learningMode)
@@ -347,6 +383,7 @@ Public MustInherit Class clsMLPGeneric
     ''' </summary>
     Public Overridable Sub TrainStochastic(inputs!(,), targets!(,))
 
+        Me.learningMode = enumLearningMode.Stochastic
         Dim nbLines = inputs.GetLength(0)
         Dim nbTargets = targets.GetLength(1)
         For iteration = 0 To Me.nbIterations - 1
@@ -365,6 +402,7 @@ Public MustInherit Class clsMLPGeneric
     ''' </summary>
     Public Overridable Sub TrainSemiStochastic(inputs!(,), targets!(,))
 
+        Me.learningMode = enumLearningMode.SemiStochastic
         Dim nbLines = inputs.GetLength(0)
         Dim nbInputs = inputs.GetLength(1)
         Dim nbTargets = targets.GetLength(1)
@@ -403,6 +441,7 @@ Public MustInherit Class clsMLPGeneric
     Public Overridable Sub TrainSystematic(inputs!(,), targets!(,),
         Optional learningMode As enumLearningMode = enumLearningMode.Defaut)
 
+        Me.learningMode = learningMode
         Dim nbTargets = targets.GetLength(1)
         For iteration = 0 To Me.nbIterations - 1
             TrainAllSamples(inputs, targets)
@@ -415,7 +454,7 @@ Public MustInherit Class clsMLPGeneric
     ''' <summary>
     ''' Close the training session
     ''' </summary>
-    Public Overridable Sub CloseSession()
+    Public Overridable Sub CloseTrainingSession()
     End Sub
 
 #End Region
@@ -504,12 +543,17 @@ Public MustInherit Class clsMLPGeneric
         ShowMessage("")
         ShowMessage(Now() & " :")
         ShowMessage("")
+        If Me.learningMode <> enumLearningMode.Defaut Then ShowMessage(
+            "learning mode=" & clsMLPHelper.ReadEnumDescription(Me.learningMode))
         ShowMessage("layer count=" & Me.layerCount)
         ShowMessage("neuron count=" & clsMLPHelper.ArrayToString(Me.neuronCount))
         ShowMessage("use bias=" & Me.useBias)
         If Me.learningRate <> 0 Then ShowMessage("learning rate=" & Me.learningRate)
         If Me.weightAdjustment <> 0 Then ShowMessage(
             "weight adjustment=" & Me.weightAdjustment)
+        Dim afType = Me.GetActivationFunctionType()
+        If afType <> enumActivationFunctionType.Normal Then _
+            ShowMessage("activation function type=" & clsMLPHelper.ReadEnumDescription(afType))
         ShowMessage("activation function=" & clsMLPHelper.ReadEnumDescription(Me.m_actFunc))
         ShowMessage("gain=" & Me.m_gain)
         If Me.m_center <> 0 Then ShowMessage("center=" & Me.m_center)
@@ -537,7 +581,7 @@ Public MustInherit Class clsMLPGeneric
     Protected Sub PrintSuccess(iteration%)
         Dim msg$ = vbLf & "Iteration n°" & iteration + 1 & "/" & nbIterations & vbLf
         If Me.printOutputMatrix Then msg &= "Output: " & Me.output.ToString() & vbLf
-        msg &=
+        If Not IsNothing(Me.success) Then msg &=
             "Average error: " & Me.averageError.ToString(format6Dec) & vbLf &
             "Success (" & (minimalSuccessTreshold).ToString("0%") & "): " &
             Me.nbSuccess & "/" & Me.success.r * Me.success.c & ": " &
