@@ -6,6 +6,9 @@ This is the classical XOR test.
 
 # Versions
 
+06/12/2020 V1.18
+- clsMLPGeneric.InitializeStruct function
+
 21/11/2020 V1.17
 - Iris flower prediction analog test added
 - clsVecMatrix.ComputeErrorOneSample() : clsMLPGeneric's version used
