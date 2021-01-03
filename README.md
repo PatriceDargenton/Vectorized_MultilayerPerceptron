@@ -6,6 +6,15 @@ This is the classical XOR test.
 
 # Versions
 
+03/01/2021 V1.20
+- modMLPTest.TestMLP2XORSigmoid fixed
+- modActivation: Sigmoid and Tanh limits fixed
+- clsRndExtension: NextDoubleGreaterThanZero added (RProp MLP)
+- clsMLPGeneric.ShowWeights added, to compare configurations
+- clsMLPGeneric.classificationObjective added (RProp MLP)
+- clsMLPGeneric.useNguyenWidrowWeightsInitialization added (RProp MLP)
+- clsMLPGeneric.minRandomValue added (RProp MLP)
+
 12/12/2020 V1.19
 - clsMLPGeneric.averageError: Single -> Double
 
