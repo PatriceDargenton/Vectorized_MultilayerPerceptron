@@ -6,6 +6,9 @@ This is the classical XOR test.
 
 # Versions
 
+08/01/2021 V1.21
+- Dataset directory
+
 03/01/2021 V1.20
 - modMLPTest.TestMLP2XORSigmoid fixed
 - modActivation: Sigmoid and Tanh limits fixed

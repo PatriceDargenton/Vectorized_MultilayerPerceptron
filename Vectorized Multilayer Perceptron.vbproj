@@ -73,6 +73,14 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dataset\mod1XOR.vb" />
+    <Compile Include="Dataset\mod2XOR.vb" />
+    <Compile Include="Dataset\mod3XOR.vb" />
+    <Compile Include="Dataset\modIrisFlowerInputOriginal.vb" />
+    <Compile Include="Dataset\modIrisFlowerInputCorrected.vb" />
+    <Compile Include="Dataset\modIrisFlowerTargetLogical.vb" />
+    <Compile Include="Dataset\modIrisFlowerTargetAnalogOriginal.vb" />
+    <Compile Include="Dataset\modIrisFlowerTargetAnalog.vb" />
     <Compile Include="clsMatrixHP.vb" />
     <Compile Include="clsMatrixNL.vb" />
     <Compile Include="clsMLPGeneric.vb" />
