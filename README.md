@@ -6,6 +6,9 @@ This is the classical XOR test.
 
 # Versions
 
+08/01/2021 V1.22
+- Matrix.ToArraySingle -> ToArrayOfSingle
+
 08/01/2021 V1.21
 - Dataset directory
 
