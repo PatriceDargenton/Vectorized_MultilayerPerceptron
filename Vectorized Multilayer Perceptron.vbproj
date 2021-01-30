@@ -89,6 +89,7 @@
     <Compile Include="clsRndExtension.vb" />
     <Compile Include="clsVecMatrixMLP.vb" />
     <Compile Include="clsVecMatrixMLPTest.vb" />
+    <Compile Include="Dataset\modSunspot.vb" />
     <Compile Include="modActivation.vb" />
     <Compile Include="modMatrixMLPTest.vb" />
     <Compile Include="AssemblyInfo.vb" />
