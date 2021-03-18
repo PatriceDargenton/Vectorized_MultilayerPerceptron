@@ -5,7 +5,7 @@ Module modTests
 
         VectorizedMatrixMLPTest()
 
-        WaitForKeyToQuit()
+        'WaitForKeyToQuit()
 
     End Sub
 

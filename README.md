@@ -6,6 +6,9 @@ This is the classical XOR test, the [Iris flower](https://en.wikipedia.org/wiki/
 
 # Versions
 
+18/03/2021 V1.26
+- Console demo: Menu added
+
 30/01/2021 V1.25
 - Sunspots dataset added (time series dataset)
 - clsMLPGeneric: series array (for example time series)
