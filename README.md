@@ -6,6 +6,9 @@ This is the classical XOR test, the [Iris flower](https://en.wikipedia.org/wiki/
 
 # Versions
 
+20/03/2021 V1.27
+- Sunspots tests and matrix size checks fixed
+
 18/03/2021 V1.26
 - Console demo: Menu added
 
