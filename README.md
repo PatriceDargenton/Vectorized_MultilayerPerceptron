@@ -6,6 +6,10 @@ This is the classical XOR test, the [Iris flower](https://en.wikipedia.org/wiki/
 
 # Versions
 
+15/04/2021 V1.30
+- clsMLPGeneric.ShowWeights added
+- 3 XOR tests added
+
 01/04/2021 V1.29
 - New Sunspots test added
 
