@@ -65,12 +65,6 @@
     <Reference Include="NumSharp.Lite, Version=0.1.12.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\NumSharp.Lite.0.1.12\lib\netstandard2.0\NumSharp.Lite.dll</HintPath>
     </Reference>
-    <Reference Include="SixLabors.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SixLabors.Core.1.0.0-beta0008\lib\netstandard2.0\SixLabors.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SixLabors.ImageSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SixLabors.ImageSharp.1.0.0-beta0007\lib\net472\SixLabors.ImageSharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
